@@ -34,8 +34,17 @@ THE SOFTWARE.
   <Version>1.0.0</Version>
 
   <!-- Optional -->
-  <LogLevel>Verbose</LogLevel>
- 
+  <LogLevel>Info</LogLevel>
+
+  <!-- Optional -->
+  <!--<LogFilePath>c:\ProgramData\Enhanced Monitoring\log</LogFilePath>-->
+
+  <!-- Optional -->
+  <!--<MaxLogRetain>10</MaxLogRetain>-->
+
+  <!-- Optional -->
+  <!--<LogFileSize>10</LogFileSize>-->
+  
   <!-- Mandatory -->
   <DataItemKeyPrefix>Enhanced_Monitoring_Metric_Data_Item_Part_</DataItemKeyPrefix>
 

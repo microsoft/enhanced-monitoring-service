@@ -39,6 +39,17 @@ THE SOFTWARE.
   <!-- Optional -->
   <MaxValueLength>700</MaxValueLength>
 
+  <!-- Optional -->
+  <!-- Default Value 10-->
+  <MaxLogRetain>10</MaxLogRetain>
+
+  <!-- Optional -->
+  <!-- Default Value 4194304B -->
+  <LogFileSize>4194304</LogFileSize>
+
+  <!-- Optional -->
+  <LogFilePath>c:\ProgramData\Enhanced Monitoring\log</LogFilePath>
+
   <Kvp>
     <BatchMode>true</BatchMode>
     <WriteInterval>200</WriteInterval>
