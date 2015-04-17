@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+The MIT License (MIT)
+
+Copyright 2015 Microsoft Corporation
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+-->
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+  <?define CurrentVersion="1.0.0.0"?>
+
+  <?ifdef var.EnhancedMonitoring.ProjectDir?>
+    <?define EnhancedMonitoring.Config.Path="$(var.EnhancedMonitoring.ProjectDir)\Configuration\EnhancedMonitoringProviderConfig.xml"?>
+    <?define EnhancedMonitoring.Common.Path="$(var.EnhancedMonitoring.TargetDir)\EnhancedMonitoring.dll"?>
+    <?define EnhancedMonitoring.Service.Path="$(var.Service.TargetDir)\EnhancedMonitoringProvider.Service.exe"?>
+  <?else?>
+  <?endif?>
+
+  <Product Id="*"
+           Name="Enhanced Monitoring Provider Service"
+           Language="1033"
+           Version="$(var.CurrentVersion)"
+           Manufacturer="Microsoft Corporation"
+           UpgradeCode="2ABBBB5B-39D3-4FB2-9FF2-384DE4DE8F97">
+
+    <!-- Package Information -->
+    <Package InstallerVersion="200" Platform="x64" Compressed="yes" InstallScope="perMachine" />
+    <MajorUpgrade Schedule="afterInstallValidate"
+                  AllowDowngrades="yes"  />
+    <Media Id="1" Cabinet="empsvc.cab" EmbedCab="yes" />
+    
+    <!-- Conditions -->
+    <!-- Check Hyper-V Installation -->
+    <Property Id="HYPERVINSTALLED">
+      <DirectorySearch Id="SystemFolder" Path="[WindowsFolder]">
+        <DirectorySearch Id="HyperVInstallation" Path="System32">
+          <FileSearch Name="vmms.exe" />
+        </DirectorySearch>
+      </DirectorySearch>
+    </Property>
+    <Condition Message="You need to be an administrator to install this product.">Privileged</Condition>
+    <Condition Message="Make sure that Hyper-V role is installed, then try again.">
+      <![CDATA[Installed OR HYPERVINSTALLED]]>
+    </Condition>
+    
+    <Directory Id="TARGETDIR" Name="SourceDir">
+
+      <Directory Id="CommonAppDataFolder">
+        <Directory Id="EnhancedMonitoringDataFolder" Name="Enhanced Monitoring" >
+          <Component Id="EnhancedMonitoring.Config" Guid="B557EDF2-547A-49AF-BAEF-AE4A6D7FF08E" Win64='yes'>
+            <File Id="EnhancedMonitoringProviderConfig.xml" Name="EnhancedMonitoringProviderConfig.xml"
+                  Source="$(var.EnhancedMonitoring.Config.Path)" Vital="yes" KeyPath="yes" DiskId="1"/>
+          </Component>
+        </Directory>
+      </Directory>
+
+      <Directory Id="ProgramFiles64Folder" Name="PFiles">
+        <Directory Id="INSTALLDIR" Name="Enhanced Monitoring" >
+
+          <Component Id="EnhancedMonitoring.Common" Guid="44DD941F-D097-4CC0-A57B-E12DD3311BDB" Win64='yes'>
+            <File Id="EnhancedMonitoring.dll" Name="EnhancedMonitoring.dll"
+                Source="$(var.EnhancedMonitoring.Common.Path)"
+                Vital="yes" KeyPath="yes" DiskId="1"/>
+          </Component>
+
+          <Component Id="EnhancedMonitoring.Service" Guid="379A9EFB-8813-43ED-B954-ED3065595D93" Win64='yes'>
+
+            <File Id="EnhancedMonitoringProvider.Service.exe" Name="EnhancedMonitoringProvider.Service.exe"
+                  Source="$(var.EnhancedMonitoring.Service.Path)" Vital="yes" KeyPath="yes" DiskId="1"/>
+
+            <ServiceInstall
+             Id="ServiceInstaller"
+             Type="ownProcess"
+             Vital="yes"
+             Name="empsvc"
+             DisplayName="Enhanced Monitoring Provider Service"
+             Description="Provides enhanced data monitoring for virtual machines. Allows monitoring the performance and resource status of the physical server from within the virtual machine."
+             Start="auto"
+             Account=".\LocalSystem"
+             ErrorControl="ignore"
+             Interactive="no"
+              >
+              <ServiceConfig DelayedAutoStart ="yes" OnReinstall="yes" OnInstall="yes" />
+            
+            </ServiceInstall>
+            <ServiceControl Id="StartService" Start="install" Stop="both" Remove="uninstall" Name="empsvc" Wait="yes" />
+
+            <util:EventSource xmlns:util="http://schemas.microsoft.com/wix/UtilExtension" 
+                              Log="Enhanced Monitoring"
+                              Name="Enhanced Monitoring Provider Service"
+                              EventMessageFile="C:\Windows\Microsoft.NET\Framework\v4.0.30319\EventLogMessages.dll"/>
+          </Component>
+        </Directory>
+      </Directory>
+    </Directory>
+
+    <Feature Id="ProductFeature" Title="Enhanced Monitoring Provider Service" Level="1">
+      <ComponentRef Id="EnhancedMonitoring.Config" />
+      <ComponentRef Id="EnhancedMonitoring.Common" />
+      <ComponentRef Id="EnhancedMonitoring.Service" />
+    </Feature>
+  </Product>
+
+</Wix>
