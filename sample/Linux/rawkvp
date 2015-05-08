@@ -1,0 +1,21 @@
+#!/usr/bin/env python
+#
+#Read kvp and display on screen
+#
+
+import io
+import sys
+import kvpio
+
+if __name__ == '__main__':
+    print_key = len(sys.argv) > 1 and sys.argv[1].lower() == 'key'
+    for i in [0, 1, 2, 3, 4]:
+        print "---------------------------------------------------------------------"
+        print "Pool " + str(i) + ":"
+        print "---------------------------------------------------------------------"
+        data = kvpio.read_raw_kvp(i)
+        for k in data:
+            if not print_key:
+                print str(k) + "=" + str(data[k])
+            else:
+                print str(k)
