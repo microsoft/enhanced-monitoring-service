@@ -18,6 +18,7 @@ Installation:
 Validate the installation:
 -----
 After installation, confirm you can find the "Enhanced Monitoring Provider Service" service from the services console, and it should be automatically started.
+
 ![](doc/service.png)
 
 Configuration:
@@ -51,6 +52,7 @@ The sample code for parsing the data could be found under [sample](/sample).
 Trouble shooting:
 -----
 If any issue occurs, you can find log file under ```C:\ProgramData\Enhanced Monitoring\log```.
+
 ![](doc/log.png)
 
 Limitations:
