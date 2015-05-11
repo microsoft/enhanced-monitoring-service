@@ -31,18 +31,18 @@ For example, You could turn on verbose log for trouble shooting by updating "Log
   <!-- Optional -->
   <LogLevel>Verbose</LogLevel>
 ```
-However, we don't advice you to monify the configuration file unless you know the consequences.
-#### Configure VM to receive monitoring data
-The VM needs to be configured before it could receive performance data from host. The configuration is to add a KVP named ```Enhanced_Monitoring_Supported``` in the VM. So that the host could read the KVP from KVP channel and recoginize that the VM is expecting monitoring data.
+However, we don't advice you to modify the configuration file unless you know the consequences.
+#### Configure guest VM to receive monitoring data
+The VM needs to be configured before it could receive performance data from host. The configuration is to add a KVP named ```Enhanced_Monitoring_Supported``` in the guest VM. So that the host could read the KVP from KVP channel and recoginize that this guest VM is expecting monitoring data.
 
 On Linux VM, the configuration could be done by writing a flag to file, ```/var/lib/hyperv/.kvp_pool_1```.
 On Windows VM, the configuration could be down by creating a register key, ```HKLM:\SOFTWARE\Microsoft\Virtual Machine\Guest\Enhanced_Monitoring_Supported``` and set the value to 1.
 
 The sample code could be found under [sample](/sample).
 
-Read monitoring data inside a VM:
+Read monitoring data inside a guest VM:
 -----
-After VM is configured to revceive monitoring data, host will send monitoring data to the VM through KVP channel.
+After guest VM is configured to revceive monitoring data, host will send monitoring data to the guest VM through KVP channel.
 
 On Linux VM, the data is under, ```/var/lib/hyperv/.kvp_pool_0```.
 On Windows VM, the data is under register key, ```HKLM:\SOFTWARE\Microsoft\Virtual Machine\External```.
@@ -57,21 +57,21 @@ If any issue occurs, you can find log file under ```C:\ProgramData\Enhanced Moni
 
 Limitations:
 -----
-#### VM name limitation
-The Enhanced Monitoring Service has a limitation on VM name. The 2 VMs could not share the same name and the VM name could not contain the following charactors:
+#### Guest VM name limitation
+The Enhanced Monitoring Service has a limitation on guest VM name. Guest VMs could not share the same name and the VM name could not contain the following charactors:
 ```
 ( ) * / # "
 ```
 This limitation is introducded by HyperV.
 #### Refresh Rate
-If you have a huge number of VMs(more than 40) running on the same host. You need to increase refresh rate to 2 mins. You could do this by updating "RefreshRate" in configuration file and restart the service.
+If you have a huge number of guest VMs(more than 40) running on the same host. You need to increase refresh rate to 2 mins. You could do this by updating "RefreshRate" in configuration file and restart the service.
 ```
   <!-- Refresh interval in seconds-->
   <!-- Mandatory -->
   <RefreshRate>60</RefreshRate>
 ```
 #### WMI quota
-The Enhanced Monitoring Service relies on WMI Provider Service to monitor the performance and resource status of the physical server. However WMI Provider Service has limitaiton on resources(threads, memory, etc.). If you have a huge number of VMs, you need to increase the quota. Or if you have other work load that might use WMI Proviser Service running on the same host, also you need to increase the quota.
+The Enhanced Monitoring Service relies on WMI Provider Service to monitor the performance and resource status of the physical server. However WMI Provider Service has limitaiton on resources(threads, memory, etc.). If you have a huge number of VMs(more than 40), you need to increase the quota. Or if you have other work load that might use WMI Proviser Service running on the same host, also you need to increase the quota.
 
 [How to Increase WMI quota](http://blogs.technet.com/b/askperf/archive/2008/09/16/memory-and-handle-quotas-in-the-wmi-provider-service.aspx)
 
