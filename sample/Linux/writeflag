@@ -1,0 +1,16 @@
+#!/usr/bin/env python
+#
+#Read kvp and display on screen
+#
+
+import io
+import kvpio
+
+if __name__ == "__main__":
+    kvp = [0] * (512 + 2048)
+    key = bytes("Enhanced_Monitoring_Supported")
+    val = bytes("1")
+    kvp[0: len(key)] = key[0 : len(key)]
+    kvp[512 : 512 + len(val)] = val[0 : len(val)]
+    b = bytearray(kvp)
+    kvpio.write_bytes(1, b)

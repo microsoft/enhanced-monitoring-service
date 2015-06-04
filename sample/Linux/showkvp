@@ -1,0 +1,57 @@
+#!/usr/bin/env python
+#
+#Read perf counters
+#
+
+import datetime
+import time
+import json
+import sys
+import base64
+from StringIO import StringIO
+import kvpio
+import xml.etree.ElementTree as ET
+
+def parseXML(s):
+    xmldoc = ET.fromstring(s)
+    return xmldoc
+
+def readDataPart(data, i):
+    val = data.get('Enhanced_Monitoring_Metric_Data_Item_Part_' + str(i), None)
+    return parseXML(val)
+
+def readPerfCounter():
+    data = kvpio.read_raw_kvp(0)
+    dataStr = ""
+
+    part_0 = readDataPart(data, 0)
+    if not part_0:
+        print "Data not found"
+        return;
+    ts = part_0.find('ts').text
+    dataStr += part_0.find('data').text
+    for i in range(1, int(part_0.find('all').text)):
+        part_i = readDataPart(data, i)
+        if ts != part_i.find('ts').text:
+            print "Wrong timestamp:" + str(ts) + ", Part:" + str(i)
+        dataStr += part_i.find('data').text
+    
+    dataStr = base64.b64decode(dataStr)
+    
+    print "------------------------------------------------------------------------"
+    ts = float(ts)
+    timestamp = datetime.datetime.fromtimestamp(ts/1000).strftime('%Y-%m-%d %H:%M:%S %z')
+    print dataStr
+    print timestamp
+
+if __name__ == "__main__":
+    args = sys.argv[1:]
+    loop = False
+
+    if len(args) > 0 and args[0].lower() == 'loop':
+        loop = True
+
+    readPerfCounter()
+    while loop:
+        time.sleep(60)
+        readPerfCounter()
