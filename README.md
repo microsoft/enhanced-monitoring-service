@@ -2,11 +2,9 @@ How to install Enhanced Monitoring Service on Windows Server 2012 R2
 ======
 This tool provides enhanced data monitoring for virtual machines. It allows you to monitor the performance and resource status of the physical server from within the virtual machine.	
 
-This tool relies on [KVP data exchange](https://technet.microsoft.com/en-us/library/dn798297.aspx) channel to pass performance data from host to guest VM.
-
 Prerequisites:
 ------
-None
+This tool relies on [KVP data exchange](https://technet.microsoft.com/en-us/library/dn798297.aspx) channel to pass performance data from host to guest VM.
 	
 Installation:
 ------
@@ -17,61 +15,62 @@ Installation:
 
 Validate the installation:
 -----
-After installation, confirm you can find the "Enhanced Monitoring Provider Service" service from the services console, and it should be automatically started.
+After the installation confirm that  the "Enhanced Monitoring Provider Service" service is visible in the services console, and that it is automatically started.
 
 ![](doc/service.png)
 
 Configuration:
 -----
 #### Configure Enhanced Monitoring Service on Host
-The configuration file path is ```C:\ProgramData\Enhanced Monitoring\EnhancedMonitoringProviderConfig.xml```. You could modify the configuration file to config Enhanced Monitoring Service. Please notice that any modification to the configuration file will only take effect after you restart the service.
+The configuration file path is ```C:\ProgramData\Enhanced Monitoring\EnhancedMonitoringProviderConfig.xml```. You may modify the file to configure the Enhanced Monitoring Service. Any modification to the configuration file will only take effect after you restart the service.
 
-For example, You could turn on verbose log for trouble shooting by updating "LogLevel" in configuration file and restart the service.
+Example: You can turn on verbose logging for troubleshooting by changing the  "LogLevel" value to “Verbose” :
+
 ```
   <!-- Optional -->
   <LogLevel>Verbose</LogLevel>
 ```
-However, we don't advice you to modify the configuration file unless you know the consequences.
+However, we advise to leave the configuration file unchanged unless there is a good reason to do so.
+
 #### Configure guest VM to receive monitoring data
-The VM needs to be configured before it could receive performance data from host. The configuration is to add a KVP named ```Enhanced_Monitoring_Supported``` in the guest VM. So that the host could read the KVP from KVP channel and recoginize that this guest VM is expecting monitoring data.
+A key-value-pair ```Enhanced_Monitoring_Supported=1``` needs to be presented by the guest VM to the host so that the host is aware that this particular guest VM is expecting monitoring data. Only then the  Enhanced Monitoring Service will populate the KVP data exchange channel for this VM with monitoring data.
 
-On Linux VM, the configuration could be done by writing a flag to file, ```/var/lib/hyperv/.kvp_pool_1```.
-On Windows VM, the configuration could be down by creating a register key, ```HKLM:\SOFTWARE\Microsoft\Virtual Machine\Guest\Enhanced_Monitoring_Supported``` and set the value to 1.
+On a Linux VM this can be done by writing the key-value-pair ```Enhanced_Monitoring_Supported=1``` to the file ```/var/lib/hyperv/.kvp_pool_1```. On a Windows VM a registry key ```HKLM:\SOFTWARE\Microsoft\Virtual Machine\Guest\Enhanced_Monitoring_Supported``` must be created and set to the value 1.
 
-The sample code could be found under [sample](/sample).
+The sample code can be found under [sample](/sample).
 
 Read monitoring data inside a guest VM:
 -----
-After guest VM is configured to revceive monitoring data, host will send monitoring data to the guest VM through KVP channel.
+After the guest VM is configured to receive monitoring data, the host will send monitoring data to the guest VM through the KVP channel.
 
-On Linux VM, the data is under, ```/var/lib/hyperv/.kvp_pool_0```.
-On Windows VM, the data is under register key, ```HKLM:\SOFTWARE\Microsoft\Virtual Machine\External```.
+In a Linux VM the data is received under ```/var/lib/hyperv/.kvp_pool_0```. In a Windows VM the data is received under the register key ```HKLM:\SOFTWARE\Microsoft\Virtual Machine\External```.
 
-The performance data is base64-encoded and seperated into several parts to fit in length limitation of KVP channel.
-The sample code for parsing the data could be found under [sample](/sample).
-Trouble shooting:
+The performance data is base64-encoded and split into multiple parts to follow the length limitation of the KVP channel. The sample code for parsing the data can be found under [sample](/sample).
+
+Trouble shooting
 -----
-If any issue occurs, you can find log file under ```C:\ProgramData\Enhanced Monitoring\log```.
+All issues are logged under ```C:\ProgramData\Enhanced Monitoring\log```.
 
 ![](doc/log.png)
 
-Limitations:
------
-#### Guest VM name limitation
-The Enhanced Monitoring Service has a limitation on guest VM name. Guest VMs could not share the same name and the VM name could not contain the following charactors:
+The Enhanced Monitoring Service has a limitation for the guest VM name. Guest VMs must have different names and the VM name must not contain the following characters:
 ```
 ( ) * / # "
 ```
-This limitation is introducded by HyperV.
-#### Refresh Rate
-If you have a huge number of guest VMs(more than 40) running on the same host. You need to increase refresh rate to 2 mins. You could do this by updating "RefreshRate" in configuration file and restart the service.
+This limitation is introduced by Hyper-V.
+
+Refresh Rate
+-----
+If you have a large number of guest VMs (more than 40) running on the same host, you need to increase the refresh rate to 2 minutes. You can do this by setting the "RefreshRate" value in the configuration file to “60” and restart the service.
 ```
   <!-- Refresh interval in seconds-->
   <!-- Mandatory -->
   <RefreshRate>60</RefreshRate>
 ```
-#### WMI quota
-The Enhanced Monitoring Service relies on WMI Provider Service to monitor the performance and resource status of the physical server. However WMI Provider Service has limitaiton on resources(threads, memory, etc.). If you have a huge number of VMs(more than 40), you need to increase the quota. Or if you have other work load that might use WMI Proviser Service running on the same host, also you need to increase the quota.
+
+WMI quota
+-----
+The Enhanced Monitoring Service relies on the WMI Provider Service to monitor the performance and resource status of the physical server. However, the WMI Provider Service has a resource limitation  for threads, memory, etc. If you have a large number of VMs (more than 40), you need to increase the quota. Likewise,  if you have other work loads that might use the WMI Provider Service running on the same host, you also need to increase the quota.
 
 [How to Increase WMI quota](http://blogs.technet.com/b/askperf/archive/2008/09/16/memory-and-handle-quotas-in-the-wmi-provider-service.aspx)
 
