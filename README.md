@@ -8,7 +8,7 @@ This tool relies on [KVP data exchange chanel](https://technet.microsoft.com/en-
 	
 Installation
 ------
-1. Download the EnhancedMonitoring.msi package
+1. Download the  [EnhancedMonitoring.msi](https://github.com/OSTC/enhanced-monitoring-service/releases/download/v1.0/EnhancedMonitoring.msi) package
 2. Run MSI to install the Enhanced Monitoring Service
 
 ![](doc/installer.png)
