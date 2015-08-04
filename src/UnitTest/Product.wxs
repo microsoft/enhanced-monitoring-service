@@ -40,7 +40,7 @@ THE SOFTWARE.
            Version="$(var.CurrentVersion)"
            Manufacturer="Microsoft Corporation"
            UpgradeCode="2ABBBB5B-39D3-4FB2-9FF2-384DE4DE8F97">
-    
+
     <!-- Package Information -->
     <Package InstallerVersion="200" Platform="x64" Compressed="yes" InstallScope="perMachine" />
     <MajorUpgrade Schedule="afterInstallValidate"
@@ -117,18 +117,7 @@ THE SOFTWARE.
       <ComponentRef Id="EnhancedMonitoring.Common" />
       <ComponentRef Id="EnhancedMonitoring.Service" />
     </Feature>
-  
-    <UIRef Id="WixUI_Minimal" />
-    <Property Id="WIXUI_EXITDIALOGOPTIONALTEXT" Value="Enhanced Monitoring Service installed successfully." />
-    
-    <CustomAction Id='LaunchApplication' Directory='INSTALLDIR' Execute='deferred'
-      ExeCommand='[SystemFolder]cmd.exe /c &quot;rd /s /q "C:\ProgramData\Enhanced Monitoring"&quot;' Return='ignore' Impersonate = "no" />
-
-    <InstallExecuteSequence>
-      <Custom Action='LaunchApplication' After='InstallInitialize'>
-        (NOT UPGRADINGPRODUCTCODE) AND (REMOVE="ALL")
-      </Custom>
-    </InstallExecuteSequence>
+    <!--<Property Id="WIXUI_EXITDIALOGOPTIONALTEXT" Value="'Enhanced Monitoring Service installed successfully." />-->
   </Product>
 
 </Wix>

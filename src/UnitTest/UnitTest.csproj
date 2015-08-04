@@ -82,6 +82,7 @@
     <Compile Include="WMIQueryHelperTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Product.wxs" />
     <Content Include="SampleMonitor.xml" />
     <Content Include="SampleResult.xml">
       <SubType>Designer</SubType>
