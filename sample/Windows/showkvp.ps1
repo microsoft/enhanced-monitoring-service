@@ -12,14 +12,14 @@ Function Show-KVP
     $kvp = Get-Item -Path $path;
     if($kvp -eq $null)
     {
-        Write-Error "Register key not found:$path";
+        Write-Error "Registry key not found:$path";
         exit(-1);
     }
     $part_0 = $kvp.GetValue("Enhanced_Monitoring_Metric_Data_Item_Part_0");
 
     if($part_0 -eq $null)
     {
-        Write-Error "Performence data not found";
+        Write-Error "Performance data not found";
         exit(-1);
     }
     $data_0 = $part_0 | ConvertFrom-Xml
