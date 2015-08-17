@@ -10,9 +10,8 @@ Installation
 ------
 1. Download the  [EnhancedMonitoring.msi](https://github.com/OSTC/enhanced-monitoring-service/releases/download/v1.0/EnhancedMonitoring.msi) package
 2. Run MSI to install the Enhanced Monitoring Service
-
 ![](doc/installer.png)
-
+![](doc/finish.png)
 Validate the installation
 -----
 After the installation confirm that  the "Enhanced Monitoring Provider Service" service is visible in the services console, and that it is automatically started.
@@ -35,7 +34,7 @@ However, we advise to leave the configuration file unchanged unless there is a g
 #### Configure the guest VM to receive monitoring data
 A key-value-pair ```Enhanced_Monitoring_Supported=1``` needs to be presented by the guest VM to the host so that the host is aware that this particular guest VM is expecting monitoring data. Only then the  Enhanced Monitoring Service will populate the KVP data exchange channel for this VM with monitoring data.
 
-On a Linux VM this can be done by writing the key-value-pair ```Enhanced_Monitoring_Supported=1``` to the file ```/var/lib/hyperv/.kvp_pool_1```. On a Windows VM a registry key ```HKLM:\SOFTWARE\Microsoft\Virtual Machine\Guest\Enhanced_Monitoring_Supported``` must be created and set to the value 1.
+On a Linux VM this can be done by writing the key-value-pair ```Enhanced_Monitoring_Supported=1``` to the file ```/var/lib/hyperv/.kvp_pool_1```. On a Windows VM, create a REG_DWORD registry key ```HKLM:\SOFTWARE\Microsoft\Virtual Machine\Guest\Enhanced_Monitoring_Supported``` and set to the value 1.
 
 The sample code can be found under [sample](/sample).
 
