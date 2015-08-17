@@ -24,11 +24,12 @@ To install the Enhanced Monitoring Service, execute the following steps on the H
 1. Download the installation package [EnhancedMonitoring.msi](https://github.com/OSTC/enhanced-monitoring-service/releases/download/v1.1/EnhancedMonitoring.msi).
 
 3. Execute the installation package to install the Enhanced Monitoring Service.
-![](doc/finish.png)
+
+  ![](doc/finish.png)
 
 3. After the installation, confirm that the Windows service "Enhanced Monitoring Provider Service" is running, and that its Startup Type is set to "Automatic (Delayed Start)".
 
-![](doc/service.png)
+  ![](doc/service.png)
 
 ###On the Virtual Machine: Activate the Enhanced Monitoring
 
