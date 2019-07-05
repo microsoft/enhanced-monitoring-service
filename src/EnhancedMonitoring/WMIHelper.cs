@@ -34,15 +34,15 @@ namespace EnhancedMonitoring
 
         public static ManagementObject CreateInstance(String scope, String className)
         {
-            if(String.IsNullOrEmpty(scope))
+            if (String.IsNullOrEmpty(scope))
             {
-                throw new ArgumentNullException("scope");
+                throw new ArgumentNullException(nameof(scope));
             }
             if (String.IsNullOrEmpty(className))
             {
-                throw new ArgumentNullException("className");
+                throw new ArgumentNullException(nameof(className));
             }
-            ManagementClass clazz = new ManagementClass(scope, className, null);
+            var clazz = new ManagementClass(scope, className, null);
             return clazz.CreateInstance();
         }
 
@@ -50,13 +50,13 @@ namespace EnhancedMonitoring
         {
             if (String.IsNullOrEmpty(scope))
             {
-                throw new ArgumentNullException("scope");
+                throw new ArgumentNullException(nameof(scope));
             }
             if (String.IsNullOrEmpty(className))
             {
-                throw new ArgumentNullException("className");
+                throw new ArgumentNullException(nameof(className));
             }
-            ManagementClass clazz = new ManagementClass(scope, className, null);
+            var clazz = new ManagementClass(scope, className, null);
             return clazz.GetInstances();
         }
 
@@ -64,11 +64,11 @@ namespace EnhancedMonitoring
         {
             if (String.IsNullOrEmpty(scope))
             {
-                throw new ArgumentNullException("scope");
+                throw new ArgumentNullException(nameof(scope));
             }
             if (String.IsNullOrEmpty(className))
             {
-                throw new ArgumentNullException("className");
+                throw new ArgumentNullException(nameof(className));
             }
             return GetInstances(scope, className).Cast<ManagementObject>().FirstOrDefault();
         }
@@ -76,11 +76,11 @@ namespace EnhancedMonitoring
         {
             if (String.IsNullOrEmpty(scope))
             {
-                throw new ArgumentNullException("scope");
+                throw new ArgumentNullException(nameof(scope));
             }
             if (String.IsNullOrEmpty(className))
             {
-                throw new ArgumentNullException("className");
+                throw new ArgumentNullException(nameof(className));
             }
             return QueryInstacnes(scope, className, condition, null);
         }
@@ -88,11 +88,11 @@ namespace EnhancedMonitoring
         {
             if (String.IsNullOrEmpty(scope))
             {
-                throw new ArgumentNullException("scope");
+                throw new ArgumentNullException(nameof(scope));
             }
             if (String.IsNullOrEmpty(className))
             {
-                throw new ArgumentNullException("className");
+                throw new ArgumentNullException(nameof(className));
             }
             var query = new SelectQuery(className, condition);
             if(selectedProperties != null)
@@ -125,11 +125,11 @@ namespace EnhancedMonitoring
         {
             if (String.IsNullOrEmpty(scope))
             {
-                throw new ArgumentNullException("scope");
+                throw new ArgumentNullException(nameof(scope));
             }
             if (String.IsNullOrEmpty(className))
             {
-                throw new ArgumentNullException("className");
+                throw new ArgumentNullException(nameof(className));
             }
             return QueryFirstInstacne(scope, className, condition, null);
         }
@@ -138,11 +138,11 @@ namespace EnhancedMonitoring
         {
             if (String.IsNullOrEmpty(scope))
             {
-                throw new ArgumentNullException("scope");
+                throw new ArgumentNullException(nameof(scope));
             }
             if (String.IsNullOrEmpty(className))
             {
-                throw new ArgumentNullException("className");
+                throw new ArgumentNullException(nameof(className));
             }
             return QueryInstacnes(scope, className, condition, selectedProperties).Cast<ManagementObject>().FirstOrDefault();
         }
@@ -164,16 +164,16 @@ namespace EnhancedMonitoring
         {
             if (outParams == null)
             {
-                throw new ArgumentNullException("outParams");
+                throw new ArgumentNullException(nameof(outParams));
             }
             if (String.IsNullOrEmpty(scope))
             {
-                throw new ArgumentNullException("scope");
+                throw new ArgumentNullException(nameof(scope));
             }
-            //Retrieve msvc_StorageJob path. This is a full wmi path
+            // Retrieve msvc_StorageJob path. This is a full wmi path.
             string JobPath = (string)outParams["Job"];
-            ManagementObject Job = new ManagementObject(new ManagementScope(scope), new ManagementPath(JobPath), null);
-            //Try to get storage job information
+            var Job = new ManagementObject(new ManagementScope(scope), new ManagementPath(JobPath), null);
+            // Try to get storage job information.
             Job.Get();
             while ((UInt16)Job["JobState"] == JobState.Starting
                 || (UInt16)Job["JobState"] == JobState.Running)
@@ -183,8 +183,8 @@ namespace EnhancedMonitoring
                 Job.Get();
             }
 
-            //Figure out if job failed
-            UInt16 jobState = (UInt16)Job["JobState"];
+            // Figure out if job failed.
+            var jobState = (UInt16)Job["JobState"];
             if (jobState != JobState.Completed)
             {
                 UInt16 jobErrorCode = (UInt16)Job["ErrorCode"];
